@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -33,8 +34,8 @@ public class Controleur {
 
 
     @GetMapping("/yeahh")
-    public ResponseEntity<String> yeah(){
-        return ResponseEntity.ok("Yeahhh");
+    public ResponseEntity<String> yeah(Principal principal){
+        return ResponseEntity.ok("Yeahhh ! salut "+ principal.getName());
     }
 
     @PostMapping("/register")
