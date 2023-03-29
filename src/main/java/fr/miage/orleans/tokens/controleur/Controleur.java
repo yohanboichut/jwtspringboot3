@@ -63,7 +63,7 @@ public class Controleur {
         Personne j = oj.get();
         if (passwordEncoder.matches(personne.password(), j.password())) {
             String token = genereToken.apply(j);
-            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION,TOKEN_PREFIX+token).build();
+            return ResponseEntity.status(201).header(HttpHeaders.AUTHORIZATION,TOKEN_PREFIX+token).build();
         };
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
