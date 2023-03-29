@@ -73,8 +73,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService users(Facade facadeJoueur, PasswordEncoder passwordEncoder) {
-        return new CostumUserDetailsService(passwordEncoder,facadeJoueur);
+    UserDetailsService users(Facade facade, PasswordEncoder passwordEncoder) {
+        return new CostumUserDetailsService(passwordEncoder,facade);
     }
 
 
@@ -137,7 +137,7 @@ public class SecurityConfig {
     @Bean
     Function<Personne,String> genereTokenFunction() {
 
-        return joueur -> {
+        return personne -> {
 
             Instant now = Instant.now();
             long expiry = 36000L;
@@ -146,10 +146,9 @@ public class SecurityConfig {
                     .issuer("self")
                     .issuedAt(now)
                     .expiresAt(now.plusSeconds(expiry))
-                    .subject(joueur.email())
+                    .subject(personne.email())
                     .claim("scope", "")
                     .build();
-
 
 
             JWSHeader.Builder b = new JWSHeader.Builder(JWSAlgorithm.ES256);
@@ -157,7 +156,7 @@ public class SecurityConfig {
             JwsHeader myJwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
 
 
-            return jwtEncoder().encode(JwtEncoderParameters.from(myJwsHeader,claims)).getTokenValue();
+            return jwtEncoder().encode(JwtEncoderParameters.from(myJwsHeader, claims)).getTokenValue();
         };
     }
 
