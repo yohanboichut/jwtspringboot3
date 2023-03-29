@@ -77,19 +77,12 @@ public class SecurityConfig {
         return new CostumUserDetailsService(passwordEncoder,facade);
     }
 
-
-    private static final String SECRET_KEY = "MySuperSecretKeyForJWTsguguofterdfyulioluktydfyiuofdtrsdfuliguydsrtfuftrsesj";
-
     @Bean
-    public JwtEncoder jwtEncoder() {
-        // Créer une clé secrète avec SecretKeySpec
-        Key key = new SecretKeySpec(SECRET_KEY.getBytes(), "HMACSHA256");
-        // Créer un objet OctetSequenceKey pour la clé secrète
-        JWK jwk = new OctetSequenceKey.Builder(key.getEncoded())
-                .algorithm(JWSAlgorithm.HS256)
-                .build();
+    public JwtEncoder jwtEncoder(JWK jwk) {
+
         // Créer un objet JWKSet avec la clé secrète
         JWKSet jwkSet = new JWKSet(jwk);
+
         // Créer un JWKSource avec la JWKSet
         JWKSource<SecurityContext> jwkSource = (jwkSelector, context) -> jwkSet.getKeys();
 
@@ -99,18 +92,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder() {
-        // Créer une clé secrète avec SecretKeySpec
-        Key key = new SecretKeySpec(SECRET_KEY.getBytes(), "HMACSHA256");
-        // Créer un objet OctetSequenceKey pour la clé secrète
-        JWK jwk = new OctetSequenceKey.Builder(key.getEncoded())
-                .algorithm(JWSAlgorithm.HS256)
-                .build();
-        // Créer un objet JWKSet avec la clé secrète
-        JWKSet jwkSet = new JWKSet(jwk);
-        // Créer un JWKSource avec la JWKSet
-        JWKSource<SimpleSecurityContext> jwkSource = (jwkSelector, context) -> jwkSet.getKeys();
-
+    public JwtDecoder jwtDecoder(JWK jwk) {
         return NimbusJwtDecoder.withSecretKey(jwk.toOctetSequenceKey().toSecretKey()).build();
     }
 
@@ -135,7 +117,7 @@ public class SecurityConfig {
         }
     */
     @Bean
-    Function<Personne,String> genereTokenFunction() {
+    Function<Personne,String> genereTokenFunction(JWK jwk) {
 
         return personne -> {
 
@@ -156,7 +138,7 @@ public class SecurityConfig {
             JwsHeader myJwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
 
 
-            return jwtEncoder().encode(JwtEncoderParameters.from(myJwsHeader, claims)).getTokenValue();
+            return jwtEncoder(jwk).encode(JwtEncoderParameters.from(myJwsHeader, claims)).getTokenValue();
         };
     }
 
