@@ -1,0 +1,12 @@
+POST http://localhost:8080/api/register
+Content-Type: application/x-www-form-urlencoded
+Accept: */*
+
+email=yohan.boichut@gmail.com&nom=Boichut&prenom=Yohan&password=babar
+
+###
+
+
+GET http://localhost:8080/api/yeahh
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoieW9oYW4uYm9pY2h1dEBnbWFpbC5jb20iLCJleHAiOjE2ODAxMTg1MzgsImlhdCI6MTY4MDA4MjUzOCwic2NvcGUiOiIifQ.PKKJ0AuUg6inZRzo4my2Lol9RuZjRFsScxFYCqveDRo
+
