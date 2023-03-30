@@ -32,6 +32,6 @@ public class Facade {
     }
 
     public void enregistrerAdmin(String adminEmail, String adminNom, String adminPrenom, String adminMDP) {
-        this.personnesMap.put(adminEmail,new Personne(adminEmail,"","",adminMDP,new Role[]{Role.ADMIN,Role.USER}));
+        this.personnesMap.put(adminEmail,new Personne(adminEmail,adminNom,adminPrenom,adminMDP,new Role[]{Role.ADMIN,Role.USER}));
     }
 }
