@@ -1,2 +1,4 @@
-package fr.miage.orleans.tokens.facades;public class Role {
+package fr.miage.orleans.tokens.facades;
+
+public enum Role {ADMIN, USER
 }

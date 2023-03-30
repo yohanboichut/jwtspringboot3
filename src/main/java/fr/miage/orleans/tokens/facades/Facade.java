@@ -20,7 +20,7 @@ public class Facade {
     public void enregistrerPersonne(String email, String nom, String prenom, String motDePasse) throws EmailDejaPrisException {
         if (personnesMap.containsKey(email))
             throw new EmailDejaPrisException();
-        this.personnesMap.put(email,new Personne(email,nom,prenom,motDePasse));
+        this.personnesMap.put(email,new Personne(email,nom,prenom,motDePasse,new Role[]{Role.USER}));
     }
 
 
@@ -29,5 +29,9 @@ public class Facade {
             return Optional.of(this.personnesMap.get(email));
         else
             return Optional.empty();
+    }
+
+    public void enregistrerAdmin(String adminEmail, String adminNom, String adminPrenom, String adminMDP) {
+        this.personnesMap.put(adminEmail,new Personne(adminEmail,"","",adminMDP,new Role[]{Role.ADMIN,Role.USER}));
     }
 }

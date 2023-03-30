@@ -33,10 +33,6 @@ public class Controleur {
 
 
 
-    @GetMapping("/yeahh")
-    public ResponseEntity<String> yeah(Principal principal){
-        return ResponseEntity.ok("Yeahhh ! salut "+ principal.getName());
-    }
 
     @PostMapping("/register")
     public ResponseEntity<String> enregistrer(@RequestParam String email, @RequestParam String nom, @RequestParam String prenom, @RequestParam String password){
@@ -69,5 +65,16 @@ public class Controleur {
     }
 
 
+
+    @GetMapping("/admin")
+    public ResponseEntity<String> yeah(Principal principal){
+        return ResponseEntity.ok("Yeahhh ! salut l'admin "+ principal.getName());
+    }
+
+
+    @GetMapping("/user")
+    public ResponseEntity<String> yeahUser(Principal principal){
+        return ResponseEntity.ok("Yeahhh ! salut le user "+ principal.getName());
+    }
 
 }

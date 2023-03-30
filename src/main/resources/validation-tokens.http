@@ -4,9 +4,44 @@ Accept: */*
 
 email=yohan.boichut@gmail.com&nom=Boichut&prenom=Yohan&password=babar
 
+
+
+> {%
+    client.global.set("token", response.headers.valueOf("Authorization"));
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 201, "L'enregistrement aurait dû être possible");
+    });
+%}
+
+
 ###
 
 
+
+GET http://localhost:8080/api/user
+Authorization: {{token}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "L'enregistrement aurait dû être possible");
+    });
+%}
+
+
+###
+
+
+GET http://localhost:8080/api/admin
+Authorization: {{token}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 403, "L'accès aurait dû être interdit");
+    });
+%}
+
+
+###
 
 POST http://localhost:8080/api/login
 Content-Type: application/json
@@ -16,10 +51,79 @@ Content-Type: application/json
   "password": "babar"
 }
 
+
+> {%
+    client.global.set("token", response.headers.valueOf("Authorization"));
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 201, "L'enregistrement aurait dû être possible");
+    });
+%}
+
 ###
 
 
 
-GET http://localhost:8080/api/yeahh
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoieW9oYW4uYm9pY2h1dEBnbWFpbC5jb20iLCJleHAiOjE2ODAxNjI3OTUsImlhdCI6MTY4MDEyNjc5NSwic2NvcGUiOiIifQ.OEMbroky1E6aKL2UHLtHdNvA9JCT7FuzMOODULtz81I
+GET http://localhost:8080/api/user
+Authorization: {{token}}
 
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "L'accès aurait dû être possible");
+    });
+%}
+
+
+###
+
+
+
+
+GET http://localhost:8080/api/admin
+Authorization: {{token}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 403, "L'accès aurait dû être interdit");
+    });
+%}
+
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.org",
+  "password": "admin"
+}
+
+
+> {%
+    client.global.set("token", response.headers.valueOf("Authorization"));
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 201, "L'enregistrement aurait dû être possible");
+    });
+%}
+
+###
+
+
+
+GET http://localhost:8080/api/user
+Authorization: {{token}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "L'accès aurait dû être possible");
+    });
+%}
+
+###
+
+GET http://localhost:8080/api/admin
+Authorization: {{token}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "L'accès aurait dû être possible");
+    });
+%}

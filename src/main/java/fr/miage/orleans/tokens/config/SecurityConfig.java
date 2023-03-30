@@ -33,6 +33,8 @@ import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
 import org.springframework.security.oauth2.jose.jws.JwsAlgorithms;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
@@ -44,8 +46,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableGlobalMethodSecurity(
@@ -61,6 +65,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/register").permitAll()
                         .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/user").hasRole("USER")
                         .anyRequest().authenticated()
                 )
 
@@ -124,12 +130,13 @@ public class SecurityConfig {
             Instant now = Instant.now();
             long expiry = 36000L;
 
+            String scope = Arrays.stream(personne.roles()).map(x -> x.toString()).collect(Collectors.joining(" "));
             JwtClaimsSet claims = JwtClaimsSet.builder()
                     .issuer("self")
                     .issuedAt(now)
                     .expiresAt(now.plusSeconds(expiry))
                     .subject(personne.email())
-                    .claim("scope", "")
+                    .claim("scope", scope)
                     .build();
 
 
@@ -140,6 +147,17 @@ public class SecurityConfig {
 
             return jwtEncoder(jwk).encode(JwtEncoderParameters.from(myJwsHeader, claims)).getTokenValue();
         };
+    }
+
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
     }
 
 
