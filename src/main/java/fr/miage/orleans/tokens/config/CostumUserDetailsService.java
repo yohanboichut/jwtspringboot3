@@ -8,11 +8,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CostumUserDetailsService implements UserDetailsService {
-    private static final String[] ROLES_ADMIN = {"USER","ADMIN"};
-    private static final String[] NO_ROLE={};
 
     private PasswordEncoder passwordEncoder;
     private Facade facade;
@@ -29,12 +30,14 @@ public class CostumUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User "+username+" not found");
 
         Personne utilisateur = utilisateurOpt.get();
-        String[] roles = NO_ROLE;
+        List<String> roles = Arrays.stream(utilisateur.roles()).map(x -> x.toString()).collect(Collectors.toList());
+        String[] resultat = new String[roles.size()];
+        String[] rolesArray = roles.toArray(resultat);
         UserDetails userDetails = User.builder()
                 .username(utilisateur.email())
-                .password(passwordEncoder.encode(utilisateur.password()))
-                .roles(roles)
-                .authorities(roles)
+                .password(utilisateur.password())
+                .roles(rolesArray)
+                .authorities(rolesArray)
                 .build();
         return userDetails;
     }
