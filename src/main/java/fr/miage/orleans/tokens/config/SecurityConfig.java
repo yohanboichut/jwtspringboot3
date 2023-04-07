@@ -63,10 +63,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    UserDetailsService users(Facade facade, PasswordEncoder passwordEncoder) {
-        return new CostumUserDetailsService(passwordEncoder,facade);
-    }
 
     @Bean
     public JwtEncoder jwtEncoder(JWK jwk) {
