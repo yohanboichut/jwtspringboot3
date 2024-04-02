@@ -23,9 +23,8 @@ public class CryptoConfig {
         // Créer une clé secrète avec SecretKeySpec
         Key key = new SecretKeySpec(SECRET_KEY.getBytes(), "HMACSHA256");
         // Créer un objet OctetSequenceKey pour la clé secrète
-        JWK jwk = new OctetSequenceKey.Builder(key.getEncoded())
+        return new OctetSequenceKey.Builder(key.getEncoded())
                 .algorithm(JWSAlgorithm.HS256)
                 .build();
-        return jwk;
     }
 }
