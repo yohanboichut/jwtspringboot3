@@ -122,7 +122,7 @@ public class SecurityConfig {
                     .build();
 
 
-            JWSHeader.Builder b = new JWSHeader.Builder(JWSAlgorithm.ES256);
+            //JWSHeader.Builder b = new JWSHeader.Builder(JWSAlgorithm.ES256);
 
             JwsHeader myJwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
 

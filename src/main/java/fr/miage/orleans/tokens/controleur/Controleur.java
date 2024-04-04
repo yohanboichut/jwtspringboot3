@@ -39,29 +39,27 @@ public class Controleur {
         try {
             facade.enregistrerPersonne(email, nom, prenom, passwordEncoder.encode(password));
             Personne j = facade.getPersonneById(email).get();
-            return ResponseEntity.status(201).header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX+genereToken.apply(j)).build();
+            return ResponseEntity.status(HttpStatus.CREATED).header(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX+genereToken.apply(j)).build();
         }
         catch (EmailDejaPrisException e) {
-            return ResponseEntity.status(409).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
 
     @PostMapping("/login")
     public ResponseEntity login( @RequestBody Personne personne) {
-        Optional<Personne> oj = null;
-
-        oj = facade.getPersonneById(personne.email());
+        Optional<Personne> oj = facade.getPersonneById(personne.email());
 
         if (oj.isEmpty())
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         Personne j = oj.get();
         if (passwordEncoder.matches(personne.password(), j.password())) {
             String token = genereToken.apply(j);
-            return ResponseEntity.status(201).header(HttpHeaders.AUTHORIZATION,TOKEN_PREFIX+token).build();
+            return ResponseEntity.status(HttpStatus.CREATED).header(HttpHeaders.AUTHORIZATION,TOKEN_PREFIX+token).build();
         };
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 
